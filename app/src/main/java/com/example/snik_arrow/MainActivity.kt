@@ -10,7 +10,13 @@ import androidx.compose.runtime.getValue
 import com.example.snik_arrow.game.GameViewModel
 import com.example.snik_arrow.ui.GameScreen
 import com.example.snik_arrow.ui.theme.SnikarrowTheme
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +24,43 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     
     private val viewModel: GameViewModel by viewModels()
+    private var mInterstitialAd: InterstitialAd? = null
+
+    private fun loadInterstitialAd() {
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mInterstitialAd = null
+            }
+
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                mInterstitialAd = interstitialAd
+            }
+        })
+    }
+
+    private fun showInterstitialAd(onAdDismissed: () -> Unit) {
+        if (mInterstitialAd != null) {
+            mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    mInterstitialAd = null
+                    loadInterstitialAd() // Pre-load next ad
+                    onAdDismissed()
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    mInterstitialAd = null
+                    onAdDismissed()
+                }
+            }
+            mInterstitialAd?.show(this)
+        } else {
+            // Ad not ready, just continue
+            onAdDismissed()
+            // Optionally try loading it again
+            loadInterstitialAd()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +71,8 @@ class MainActivity : ComponentActivity() {
         backgroundScope.launch {
             MobileAds.initialize(this@MainActivity) {}
         }
+        
+        loadInterstitialAd()
 
         setContent {
             SnikarrowTheme {
@@ -38,7 +83,12 @@ class MainActivity : ComponentActivity() {
                     onStart = { viewModel.startLevel() },
                     onShoot = { viewModel.shoot() },
                     onReset = { viewModel.reset() },
-                    onRestartGame = { viewModel.restartGame() }
+                    onRestartGame = { viewModel.restartGame() },
+                    onNextLevel = {
+                        showInterstitialAd {
+                            viewModel.startLevel()
+                        }
+                    }
                 )
             }
         }

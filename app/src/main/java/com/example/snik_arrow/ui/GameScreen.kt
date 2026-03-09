@@ -35,7 +35,8 @@ fun GameScreen(
     onStart: () -> Unit,
     onShoot: () -> Unit,
     onReset: () -> Unit,
-    onRestartGame: () -> Unit
+    onRestartGame: () -> Unit,
+    onNextLevel: () -> Unit = onStart
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -99,9 +100,7 @@ fun GameScreen(
             GameStatus.LEVEL_COMPLETE -> OverlayLevelComplete(
                 level = gameState.level.number,
                 score = gameState.currentScore,
-                onNext = {
-                    onStart()
-                }
+                onNext = onNextLevel
             )
             GameStatus.GAME_WON -> OverlayGameWon(
                 score = gameState.currentScore,
