@@ -10,6 +10,10 @@ import androidx.compose.runtime.getValue
 import com.example.snik_arrow.game.GameViewModel
 import com.example.snik_arrow.ui.GameScreen
 import com.example.snik_arrow.ui.theme.SnikarrowTheme
+import com.google.android.gms.ads.MobileAds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     
@@ -18,6 +22,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize the Google Mobile Ads SDK on a background thread
+        val backgroundScope = CoroutineScope(Dispatchers.IO)
+        backgroundScope.launch {
+            MobileAds.initialize(this@MainActivity) {}
+        }
+
         setContent {
             SnikarrowTheme {
                 val gameState by viewModel.gameState.collectAsState()
