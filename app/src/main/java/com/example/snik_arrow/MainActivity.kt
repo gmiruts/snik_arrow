@@ -17,6 +17,8 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ class MainActivity : ComponentActivity() {
     
     private val viewModel: GameViewModel by viewModels()
     private var mInterstitialAd: InterstitialAd? = null
+    private var mRewardedAd: RewardedAd? = null
 
     private fun loadInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
@@ -62,6 +65,41 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun loadRewardedAd() {
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", adRequest, object : RewardedAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mRewardedAd = null
+            }
+
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                mRewardedAd = rewardedAd
+            }
+        })
+    }
+
+    private fun showRewardedAd(onRewardEarned: () -> Unit) {
+        if (mRewardedAd != null) {
+            mRewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    mRewardedAd = null
+                    loadRewardedAd() // Pre-load next
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    mRewardedAd = null
+                    loadRewardedAd()
+                }
+            }
+            mRewardedAd?.show(this) {
+                onRewardEarned()
+            }
+        } else {
+            // Ad not ready, maybe show a toast or just load it
+            loadRewardedAd()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -73,6 +111,7 @@ class MainActivity : ComponentActivity() {
         }
         
         loadInterstitialAd()
+        loadRewardedAd()
 
         setContent {
             SnikarrowTheme {
@@ -85,10 +124,20 @@ class MainActivity : ComponentActivity() {
                     onReset = { viewModel.reset() },
                     onRestartGame = { viewModel.restartGame() },
                     onNextLevel = {
-                        showInterstitialAd {
+                        if (gameState.level.number % 3 == 0) {
+                            showInterstitialAd {
+                                viewModel.startLevel()
+                            }
+                        } else {
                             viewModel.startLevel()
                         }
-                    }
+                    },
+                    onRewardedRetry = {
+                        showRewardedAd {
+                            viewModel.revive()
+                        }
+                    },
+                    onTogglePause = { viewModel.togglePause() }
                 )
             }
         }

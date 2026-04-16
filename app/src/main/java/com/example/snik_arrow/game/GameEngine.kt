@@ -178,4 +178,27 @@ class GameEngine(private val coroutineScope: CoroutineScope) {
     fun stop() {
         gameLoopJob?.cancel()
     }
+
+    fun togglePause() {
+        val currentState = _gameState.value
+        if (currentState.status == GameStatus.PLAYING) {
+            gameLoopJob?.cancel()
+            _gameState.update { it.copy(status = GameStatus.PAUSED) }
+        } else if (currentState.status == GameStatus.PAUSED) {
+            _gameState.update { it.copy(status = GameStatus.PLAYING) }
+            startGameLoop()
+        }
+    }
+
+    fun revive() {
+        if (_gameState.value.status != GameStatus.GAME_OVER) return
+
+        _gameState.update { state ->
+            state.copy(
+                status = GameStatus.PLAYING,
+                attachedArrows = state.attachedArrows.filter { !it.isCollided }
+            )
+        }
+        startGameLoop()
+    }
 }

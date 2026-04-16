@@ -1,7 +1,7 @@
 package com.example.snik_arrow.game.models
 
 enum class GameStatus {
-    IDLE, PLAYING, GAME_OVER, LEVEL_COMPLETE, GAME_WON
+    IDLE, PLAYING, PAUSED, GAME_OVER, LEVEL_COMPLETE, GAME_WON
 }
 
 data class Level(

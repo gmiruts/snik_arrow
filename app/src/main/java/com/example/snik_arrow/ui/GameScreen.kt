@@ -36,7 +36,9 @@ fun GameScreen(
     onShoot: () -> Unit,
     onReset: () -> Unit,
     onRestartGame: () -> Unit,
-    onNextLevel: () -> Unit = onStart
+    onNextLevel: () -> Unit = onStart,
+    onRewardedRetry: () -> Unit = {},
+    onTogglePause: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -66,7 +68,7 @@ fun GameScreen(
         TopBarUi(
             score = gameState.currentScore,
             level = gameState.level.number,
-            onPauseClick = { /* Pause logic */ },
+            onPauseClick = onTogglePause,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 48.dp, start = 24.dp, end = 24.dp)
@@ -90,12 +92,14 @@ fun GameScreen(
         // Overlay Menus
         when (gameState.status) {
             GameStatus.IDLE -> OverlayMenu("TAP TO START")
+            GameStatus.PAUSED -> OverlayPause(onResume = onTogglePause)
             GameStatus.GAME_OVER -> OverlayGameOver(
                 score = gameState.currentScore,
                 onRetry = {
                     onReset()
                     onStart()
-                }
+                },
+                onWatchAd = onRewardedRetry
             )
             GameStatus.LEVEL_COMPLETE -> OverlayLevelComplete(
                 level = gameState.level.number,
@@ -305,7 +309,35 @@ fun OverlayMenu(text: String) {
 }
 
 @Composable
-fun OverlayGameOver(score: Int, onRetry: () -> Unit) {
+fun OverlayPause(onResume: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.7f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            Text(
+                text = "PAUSED",
+                color = NeonCyan,
+                fontSize = 48.sp,
+                fontWeight = FontWeight.Black
+            )
+            Button(
+                onClick = onResume,
+                colors = ButtonDefaults.buttonColors(containerColor = NeonPink)
+            ) {
+                Text(text = "RESUME", color = DarkBlueBackground, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun OverlayGameOver(score: Int, onRetry: () -> Unit, onWatchAd: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -328,11 +360,18 @@ fun OverlayGameOver(score: Int, onRetry: () -> Unit) {
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
+            
             Button(
-                onClick = onRetry,
-                colors = ButtonDefaults.buttonColors(containerColor = NeonCyan)
+                onClick = onWatchAd,
+                colors = ButtonDefaults.buttonColors(containerColor = NeonOrange)
             ) {
-                Text(text = "RETRY", color = DarkBlueBackground, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text = "WATCH AD TO CONTINUE", color = DarkBlueBackground, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            }
+
+            TextButton(
+                onClick = onRetry
+            ) {
+                Text(text = "RESTART LEVEL", color = NeonCyan, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }
     }

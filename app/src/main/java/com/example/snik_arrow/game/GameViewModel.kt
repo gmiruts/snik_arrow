@@ -27,6 +27,14 @@ class GameViewModel : ViewModel() {
         engine.restartGame()
     }
 
+    fun togglePause() {
+        engine.togglePause()
+    }
+
+    fun revive() {
+        engine.revive()
+    }
+
     override fun onCleared() {
         super.onCleared()
         engine.stop()
