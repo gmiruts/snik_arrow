@@ -25,7 +25,14 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     
-    private val viewModel: GameViewModel by viewModels()
+    private val viewModel: GameViewModel by viewModels {
+        object : androidx.lifecycle.ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return GameViewModel(application) as T
+            }
+        }
+    }
     private var mInterstitialAd: InterstitialAd? = null
     private var mRewardedAd: RewardedAd? = null
 
