@@ -1,6 +1,6 @@
-package com.example.snik_arrow.game
+package com.hackathon.snik_arrow.game
 
-import com.example.snik_arrow.game.models.Level
+import com.hackathon.snik_arrow.game.models.Level
 import kotlin.math.min
 
 object LevelRepository {

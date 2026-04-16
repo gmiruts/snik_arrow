@@ -1,11 +1,11 @@
-package com.example.snik_arrow.game
+package com.hackathon.snik_arrow.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.snik_arrow.game.models.GameState
+import com.hackathon.snik_arrow.game.models.GameState
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import com.example.snik_arrow.dataStore
+import com.hackathon.snik_arrow.dataStore
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

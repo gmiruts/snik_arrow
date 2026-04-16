@@ -1,4 +1,4 @@
-package com.example.snik_arrow.ui
+package com.hackathon.snik_arrow.ui
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.snik_arrow.game.models.GameState
-import com.example.snik_arrow.game.models.GameStatus
-import com.example.snik_arrow.ui.theme.*
+import com.hackathon.snik_arrow.game.models.GameState
+import com.hackathon.snik_arrow.game.models.GameStatus
+import com.hackathon.snik_arrow.ui.theme.*
 import kotlin.math.cos
 import kotlin.math.sin
 

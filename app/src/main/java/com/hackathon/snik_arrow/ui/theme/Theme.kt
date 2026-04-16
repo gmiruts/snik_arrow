@@ -1,4 +1,4 @@
-package com.example.snik_arrow.ui.theme
+package com.hackathon.snik_arrow.ui.theme
 
 import android.app.Activity
 import android.os.Build

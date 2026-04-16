@@ -1,4 +1,4 @@
-package com.example.snik_arrow
+package com.hackathon.snik_arrow
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.snik_arrow.game.GameViewModel
-import com.example.snik_arrow.ui.GameScreen
-import com.example.snik_arrow.ui.theme.SnikarrowTheme
+import com.hackathon.snik_arrow.game.GameViewModel
+import com.hackathon.snik_arrow.ui.GameScreen
+import com.hackathon.snik_arrow.ui.theme.SnikarrowTheme
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback

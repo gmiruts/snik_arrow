@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.snik_arrow",
+  "applicationId": "com.hackathon.snik_arrow",
   "variantName": "release",
   "elements": [
     {

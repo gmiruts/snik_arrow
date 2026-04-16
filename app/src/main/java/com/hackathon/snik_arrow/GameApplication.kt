@@ -1,4 +1,4 @@
-package com.example.snik_arrow
+package com.hackathon.snik_arrow
 
 import android.app.Application
 import android.content.Context

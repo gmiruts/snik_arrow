@@ -1,6 +1,6 @@
-package com.example.snik_arrow.game
+package com.hackathon.snik_arrow.game
 
-import com.example.snik_arrow.game.models.*
+import com.hackathon.snik_arrow.game.models.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.math.abs

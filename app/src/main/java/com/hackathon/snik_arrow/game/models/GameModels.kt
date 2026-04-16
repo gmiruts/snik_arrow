@@ -1,4 +1,4 @@
-package com.example.snik_arrow.game.models
+package com.hackathon.snik_arrow.game.models
 
 enum class GameStatus {
     IDLE, PLAYING, PAUSED, GAME_OVER, LEVEL_COMPLETE, GAME_WON

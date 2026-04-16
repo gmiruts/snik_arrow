@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.snik_arrow"
+    namespace = "com.hackathon.snik_arrow"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.snik_arrow"
+        applicationId = "com.hackathon.snikarrow"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
